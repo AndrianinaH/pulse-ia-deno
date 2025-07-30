@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { db } from "../drizzle/db.ts";
 import { users } from "../drizzle/schema.ts";
+import { generateJwt } from "../utils/jwt.ts";
 
 export const loginRoute = new Hono();
 
@@ -12,7 +13,11 @@ loginRoute.post("/", async (c) => {
       where: (u, { eq }) => eq(u.email, email),
     });
     if (user && user.password === password) {
-      return c.json({ message: "Login successful" }, 200);
+      const jwt = await generateJwt({
+        userId: user.id,
+        email: user.email,
+      });
+      return c.json({ message: "Login successful", token: jwt }, 200);
     } else {
       return c.json({ message: "Invalid email or password" }, 401);
     }
