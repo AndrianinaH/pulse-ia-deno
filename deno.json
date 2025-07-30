@@ -1,6 +1,10 @@
 {
   "imports": {
-    "hono": "jsr:@hono/hono@^4.8.10"
+    "@types/pg": "npm:@types/pg@^8.15.5",
+    "drizzle-kit": "npm:drizzle-kit@^0.31.4",
+    "drizzle-orm": "npm:drizzle-orm@^0.44.4",
+    "hono": "jsr:@hono/hono@^4.8.10",
+    "pg": "npm:pg@^8.16.3"
   },
   "tasks": {
     "start": "deno run --allow-net main.ts"
