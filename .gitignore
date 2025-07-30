@@ -1,0 +1,15 @@
+# Deno
+/deno.lock
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Others
+node_modules/
+.env
