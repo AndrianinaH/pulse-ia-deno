@@ -12,6 +12,7 @@ statsRoute.get("/", async (c) => {
       totalComments: sql<number>`sum(${post.commentCount})`,
       totalShares: sql<number>`sum(${post.shareCount})`,
       totalVideoViews: sql<number>`sum(${post.videoViewCount})`,
+      totalPosts: sql<number>`count(*)`,
     })
     .from(post);
 
