@@ -5,6 +5,14 @@ import { asc, desc } from "drizzle-orm";
 
 export const postRoute = new Hono();
 
+postRoute.get("/latest", async (c) => {
+  const posts = await db.query.post.findMany({
+    limit: 10,
+    orderBy: [desc(post.createdAt)],
+  });
+  return c.json(posts);
+});
+
 postRoute.get("/", async (c) => {
   const { page = 1, pageSize = 10, orderBy = "createdAt:desc" } = c.req.query();
 
