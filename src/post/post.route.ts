@@ -6,10 +6,11 @@ import { asc, desc } from "drizzle-orm";
 export const postRoute = new Hono();
 
 postRoute.get("/latest", async (c) => {
-  const posts = await db.query.post.findMany({
-    limit: 10,
-    orderBy: [desc(post.postCreatedAt)],
-  });
+  const posts = await db
+    .select()
+    .from(post)
+    .orderBy(desc(post.postCreatedAt))
+    .limit(10);
   return c.json(posts);
 });
 
@@ -21,11 +22,11 @@ postRoute.get("/", async (c) => {
   } = c.req.query();
 
   const [field, direction] = orderBy.split(":");
-
-  const posts = await db.query.post.findMany({
-    limit: pageSize,
-    offset: (page - 1) * pageSize,
-    orderBy: [direction === "asc" ? asc(post[field]) : desc(post[field])],
-  });
+  const posts = await db
+    .select()
+    .from(post)
+    .orderBy(direction === "asc" ? asc(post[field]) : desc(post[field]))
+    .limit(+pageSize)
+    .offset((+page - 1) * +pageSize);
   return c.json(posts);
 });
