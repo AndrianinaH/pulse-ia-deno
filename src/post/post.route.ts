@@ -8,13 +8,17 @@ export const postRoute = new Hono();
 postRoute.get("/latest", async (c) => {
   const posts = await db.query.post.findMany({
     limit: 10,
-    orderBy: [desc(post.createdAt)],
+    orderBy: [desc(post.postCreatedAt)],
   });
   return c.json(posts);
 });
 
 postRoute.get("/", async (c) => {
-  const { page = 1, pageSize = 10, orderBy = "createdAt:desc" } = c.req.query();
+  const {
+    page = 1,
+    pageSize = 10,
+    orderBy = "postCreatedAt:desc",
+  } = c.req.query();
 
   const [field, direction] = orderBy.split(":");
 
