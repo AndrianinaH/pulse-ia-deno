@@ -22,19 +22,27 @@ postRoute.get("/", async (c) => {
     search = "",
   } = c.req.query();
 
-  const pageNum = parseInt(page) || 1;
-  const pageSizeNum = parseInt(pageSize) || 10;
+  const pageNum = parseInt(page as string) || 1;
+  const pageSizeNum = parseInt(pageSize as string) || 10;
   const [field, direction] = orderBy.split(":");
   const searchTerm = search.trim();
 
-  let query = db.select().from(post);
+  const baseQuery = db.select().from(post);
+  const filteredQuery = searchTerm ? baseQuery.where(ilike(post.messageText, `%${searchTerm}%`)) : baseQuery;
 
-  if (searchTerm) {
-    query = query.where(ilike(post.messageText, `%${searchTerm}%`));
-  }
+  const validFields = {
+    'postCreatedAt': post.postCreatedAt,
+    'createdAt': post.createdAt,
+    'reactionCount': post.reactionCount,
+    'commentCount': post.commentCount,
+    'shareCount': post.shareCount,
+    'videoViewCount': post.videoViewCount
+  } as const;
 
-  const posts = await query
-    .orderBy(direction === "asc" ? asc(post[field]) : desc(post[field]))
+  const fieldColumn = validFields[field as keyof typeof validFields] || post.postCreatedAt;
+
+  const posts = await filteredQuery
+    .orderBy(direction === "asc" ? asc(fieldColumn) : desc(fieldColumn))
     .limit(pageSizeNum)
     .offset((pageNum - 1) * pageSizeNum);
 
