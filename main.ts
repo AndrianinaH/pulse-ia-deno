@@ -4,6 +4,7 @@ import { cors } from "hono/cors";
 import { postRoute } from "./src/post/post.route.ts";
 import { statsRoute } from "./src/stats/stats.route.ts";
 import { loginRoute } from "./src/login/login.route.ts";
+import { sentimentRoute } from "./src/sentiment/sentiment.route.ts";
 import { authMiddleware } from "./src/utils/auth-middleware.ts";
 
 const app = new Hono();
@@ -17,8 +18,10 @@ app.route("/login", loginRoute);
 // TOUTES les autres routes passent par authMiddleware
 app.use("/posts/*", authMiddleware);
 app.use("/stats/*", authMiddleware);
+app.use("/sentiment/*", authMiddleware);
 
 app.route("/posts", postRoute);
 app.route("/stats", statsRoute);
+app.route("/sentiment", sentimentRoute);
 
 Deno.serve(app.fetch);

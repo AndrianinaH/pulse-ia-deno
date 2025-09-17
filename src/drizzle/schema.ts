@@ -6,6 +6,7 @@ import {
   jsonb,
   serial,
   uniqueIndex,
+  decimal,
 } from "drizzle-orm/pg-core";
 
 export const post = pgTable("post", {
@@ -47,3 +48,21 @@ export const users = pgTable(
     };
   },
 );
+
+export const postSentimentScore = pgTable("post_sentiment_score", {
+  postId: text("post_id").primaryKey(),
+  positive: decimal("positive"),
+  neutral: decimal("neutral"),
+  negative: decimal("negative"),
+  finalLabel: text("final_label"),
+});
+
+export const commentAnalysis = pgTable("comment_analysis", {
+  userId: text("user_id"),
+  postId: text("post_id"),
+  commentId: text("comment_id").primaryKey(),
+  label: text("label"),
+  scorePositive: decimal("score_positive"),
+  scoreNegative: decimal("score_negative"),
+  scoreNeutral: decimal("score_neutral"),
+});
